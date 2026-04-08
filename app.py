@@ -7,13 +7,38 @@ tasks = []
 @app.route("/", methods=["GET"])
 def home():
     return """
-    <h1>🚀 Multi-Agent Assistant</h1>
-    <p>System is running successfully on Cloud Run.</p>
-    <p><b>Available API:</b></p>
-    <ul>
-        <li>POST / → add/show tasks</li>
-    </ul>
-    <p>Use curl or Postman to interact.</p>
+    <html>
+    <head>
+        <title>Multi-Agent Assistant</title>
+    </head>
+    <body>
+        <h1>🚀 Multi-Agent Assistant</h1>
+        
+        <input type="text" id="query" placeholder="Enter command (e.g., add task study)" size="40">
+        <button onclick="sendRequest()">Submit</button>
+        
+        <h3>Response:</h3>
+        <pre id="output"></pre>
+
+        <script>
+        function sendRequest() {
+            let query = document.getElementById("query").value;
+
+            fetch("/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({query: query})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+            });
+        }
+        </script>
+    </body>
+    </html>
     """
 
 @app.route("/", methods=["POST"])
